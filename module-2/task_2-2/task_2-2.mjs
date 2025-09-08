@@ -4,11 +4,14 @@ import { printOut, newLine } from "../../common/script/utils.mjs";
 
 printOut("--- Part 1 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+printOut(2 + 3 * (2 - 4) * 6);
 printOut(newLine);
 
 printOut("--- Part 2 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
+const meters = 25;
+const centimeters = 34; 
+
 printOut("Replace this with you answer!");
 printOut(newLine);
 
