@@ -72,6 +72,14 @@ printOut(newLine);
 /* Task 10*/
 printOut("--- Part 10 ---------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
-printOut("Replace this with you answer!");
+function galleryAvailability(month) {
+  if (month === "Mars" || month === "Mai") {
+    printOut("The art gallery is temporarily closed in " + month + ".");
+  } else if (month === "April") {
+    printOut("In " + month + ", you have temporary access to the next building.");
+  } else {
+    printOut("The art gallery is open in " + month + ".");
+  }
+}
+galleryAvailability(monthName);
 printOut(newLine);
-
