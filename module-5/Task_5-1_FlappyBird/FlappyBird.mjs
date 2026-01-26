@@ -1,6 +1,6 @@
 "use strict";
 // Import necessary modules
-import { TSpriteCanvas } from "libSprite";
+import { TSprite, TSpriteCanvas } from "libSprite";
 import { TBackground } from "./background.js";
 import { THero } from "./hero.js";
 import { TObstacle } from "./obstacle.js";
@@ -31,9 +31,9 @@ const SpriteInfoList = {
   medal:        { x: 985 , y: 635 , width: 44   , height: 44  , count: 4  },
 };
 
-export const EGameStatus = { idle: 0, gaming: 1, heroIsDead: 2, gameOver: 3, state: 0 };
+export const EGameStatus = { idle: 0, countDown: 1, gaming: 2, heroIsDead: 3, gameOver: 4, state: 0 };
 const background = new TBackground(spcvs, SpriteInfoList);
-export const hero = new THero(spcvs, SpriteInfoList.hero1);
+export const hero = new THero(spcvs, SpriteInfoList.hero3);
 const obstacles = [];
 const baits = [];
 const menu = new TMenu(spcvs, SpriteInfoList);
@@ -64,6 +64,7 @@ function spawnObstacle() {
   }
 }
 
+
 function animateGame() {
   hero.animate();
   let eaten = -1;
@@ -78,6 +79,7 @@ function animateGame() {
     console.log("Eaten!");
     baits.splice(eaten, 1);
   }
+
 
   if (EGameStatus.state === EGameStatus.gaming) {
     background.animate();

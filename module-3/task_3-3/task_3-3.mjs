@@ -100,6 +100,16 @@ printOut(newLine);
 
 printOut("--- Part 7 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
+if (tSpeed === null) {
+  // Calculates the Speed
+  if (aTime || aTime === 0 || !aDistance){
+    printOut("error")
+    return NaN;
+  }
+  aSpeed = aDistance / aTime;
+  printOut(`The Calculated Speed is: ${aSpeed.toFixed(2)} units/time`);
+}
+
 printOut("Replace this with you answer!");
 printOut(newLine);
 
