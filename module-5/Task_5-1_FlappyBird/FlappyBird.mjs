@@ -32,6 +32,7 @@ const SpriteInfoList = {
 };
 
 export const EGameStatus = { idle: 0, countDown: 1, gaming: 2, heroIsDead: 3, gameOver: 4, state: 0 };
+export let soundMuted = false;
 const background = new TBackground(spcvs, SpriteInfoList);
 export const hero = new THero(spcvs, SpriteInfoList.hero3);
 const obstacles = [];
@@ -40,10 +41,10 @@ const menu = new TMenu(spcvs, SpriteInfoList);
 
 //--------------- Functions ----------------------------------------------//
 export function startGame(){
-  EGameStatus.state = EGameStatus.gaming; 
+  EGameStatus.state = EGameStatus.gaming;
+  menu.startRunningSound();
   setTimeout(spawnObstacle, 1000);
   setTimeout(spawnBait, 1000);
-
 }
 
 function spawnBait() {
@@ -138,7 +139,8 @@ function onKeyDown(aEvent) {
 } // end of onKeyDown
 
 function setSoundOnOff() {
-  // Mute or unmute the game sound based on checkbox
+  soundMuted = chkMuteSound.checked;
+  menu.setSoundMute(soundMuted);
 } // end of setSoundOnOff
 
 function setDayNight(aEvent) {

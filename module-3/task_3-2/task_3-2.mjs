@@ -237,24 +237,106 @@ printOut(newLine);
 
 printOut("--- Part 7 ----------------------------------------------------------------------------------------------");
 /* Put your code below here!*/
+// This part has least two possible solutions, one using strings and one using numbers.
 
+const solveWithStrings = true; // Set to true to solve with strings, false to solve with numbers
 
+if(solveWithStrings) {
+  printOut("Solving with strings");
+} else {
+  printOut("Solving with numbers");
+}
 
-printOut("Replace this with you answer!");
-printOut(newLine);
+function matchNumber(aN1, aN2, aN3, aN4, aN5, aN6, aNumber) {
+  let count = 0;
+  if (aN1 === aNumber) count++;
+  if (aN2 === aNumber) count++;
+  if (aN3 === aNumber) count++;
+  if (aN4 === aNumber) count++;
+  if (aN5 === aNumber) count++;
+  if (aN6 === aNumber) count++;
+  return count;
+}
 
-printOut("--- Part 8 ----------------------------------------------------------------------------------------------");
-/* Put your code below here!*/
-printOut("Replace this with you answer!");
-printOut(newLine);
+function matchString(aString, aNumber) {
+  // Count how many times aNumber appears in aString
+  let count = 0;
+  for (let i = 0; i < aString.length; i++) {
+    if (parseInt(aString.charAt(i), 10) === aNumber) {
+      count++;
+    }
+  }
+  return count;
+}
 
-printOut("--- Part 9 ----------------------------------------------------------------------------------------------");
-/* Put your code below here!*/
-printOut("Replace this with you answer!");
-printOut(newLine);
-
-/* Task 10*/
-printOut("--- Part 10 ---------------------------------------------------------------------------------------------");
-/* Put your code below here!*/
-printOut("Replace this with you answer!");
+let throws = 0; // Number of throws
+let fullStraight = false; // 1 2 3 4 5 6
+let yahtzee = false; // All the same
+let tower = false; // 2 + 4 of a kind
+let threePairs = false; // 3 pairs e.g., 112233
+do {
+  const d1 = Math.ceil(Math.random() * 6); // Roll dice 1
+  const d2 = Math.ceil(Math.random() * 6); // Roll dice 2
+  const d3 = Math.ceil(Math.random() * 6); // Roll dice 3
+  const d4 = Math.ceil(Math.random() * 6); // Roll dice 4
+  const d5 = Math.ceil(Math.random() * 6); // Roll dice 5
+  const d6 = Math.ceil(Math.random() * 6); // Roll dice 6
+  throws++;
+  // Do the matching, and check for the combinations
+  let c1, c2, c3, c4, c5, c6;
+  if (solveWithStrings) {
+    const diceString = "" + d1 + d2 + d3 + d4 + d5 + d6;
+    c1 = matchString(diceString, 1);
+    c2 = matchString(diceString, 2);
+    c3 = matchString(diceString, 3);
+    c4 = matchString(diceString, 4);
+    c5 = matchString(diceString, 5);
+    c6 = matchString(diceString, 6);
+  } else {
+    c1 = matchNumber(d1, d2, d3, d4, d5, d6, 1);
+    c2 = matchNumber(d1, d2, d3, d4, d5, d6, 2);
+    c3 = matchNumber(d1, d2, d3, d4, d5, d6, 3);
+    c4 = matchNumber(d1, d2, d3, d4, d5, d6, 4);
+    c5 = matchNumber(d1, d2, d3, d4, d5, d6, 5);
+    c6 = matchNumber(d1, d2, d3, d4, d5, d6, 6);
+  }
+  // Now check for the combinations
+  let cm1, cm2, cm4, cm6;
+  if (solveWithStrings) {
+    const matchingString = "" + c1 + c2 + c3 + c4 + c5 + c6;
+    cm1 = matchString(matchingString, 1);
+    cm2 = matchString(matchingString, 2);
+    cm4 = matchString(matchingString, 4);
+    cm6 = matchString(matchingString, 6);
+  } else {
+    cm1 = matchNumber(c1, c2, c3, c4, c5, c6, 1); // Count of numbers that appear once, used for full straight
+    cm2 = matchNumber(c1, c2, c3, c4, c5, c6, 2); // Count of numbers that appear twice, used for three pairs
+    cm4 = matchNumber(c1, c2, c3, c4, c5, c6, 4); // Count of numbers that appear four times, used for tower
+    cm6 = matchNumber(c1, c2, c3, c4, c5, c6, 6); // Count of numbers that appear six times, used for yahtzee
+  }
+  // Check for full straight
+  if (cm1 === 6 && !fullStraight) {
+    // We have a full straight
+    fullStraight = true;
+    printOut(`Full straight: ${d1}${d2}${d3}${d4}${d5}${d6} (throws: ${throws})`);
+  }
+  // Check for yahtzee
+  if (cm6 === 1 && !yahtzee) {
+    // We have yahtzee
+    yahtzee = true;
+    printOut(`Yahtzee: ${d1}${d2}${d3}${d4}${d5}${d6} (throws: ${throws})`);
+  }
+  //check for tower
+  if (cm4 === 1 && cm2 === 1 && !tower) {
+    // We have a tower
+    tower = true;
+    printOut(`Tower: ${d1}${d2}${d3}${d4}${d5}${d6} (throws: ${throws})`);
+  }
+  //check for three pairs
+  if (cm2 === 3 && !threePairs) {
+    // We have three pairs
+    threePairs = true;
+    printOut(`Three pairs: ${d1}${d2}${d3}${d4}${d5}${d6} (throws: ${throws})`);
+  }
+} while (!fullStraight || !yahtzee || !tower || !threePairs);
 printOut(newLine);

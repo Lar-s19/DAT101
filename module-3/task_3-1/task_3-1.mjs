@@ -4,7 +4,7 @@ import { printOut, newLine } from "../../common/script/utils.mjs";
 printOut("--- Part 1, 2, 3 ----------------------------------------------------------------------------------------");
 /* Put your code below here!*/
 printOut("Task 1, 2 and 3");
-let wakeUpTime = 8;
+let wakeUpTime = 7;
 if (wakeUpTime == 7) {
   printOut("If i wake up at 7, " +"I can take the bus to school.");
     }else if (wakeUpTime == 8) {
