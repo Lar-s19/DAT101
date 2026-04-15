@@ -1,5 +1,5 @@
 "use strict";
-import { TSprite, TSpriteButton, TSpriteNumber } from "libSprite";
+import { TSprite, TSpriteButton, TSpriteNumber} from "libSprite";
 import { startGame } from "./FlappyBird.mjs";
 import { TSoundFile } from "libSound";
 
@@ -12,63 +12,82 @@ export class TMenu{
   #spCountDown;
   #sfCountDown;
   #sfRunning;
+  #spGameScore;
+  #isMuted = false;
   constructor(aSpcvs, aSPI){
     this.#spTitle = new TSprite(aSpcvs, aSPI.flappyBird, 200, 100);
-    this.#spPlayBtn = new TSpriteButton(aSpcvs, aSPI.buttonPlay, 237, 175); 
+    this.#spPlayBtn = new TSpriteButton(aSpcvs, aSPI.buttonPlay, 240, 180);
     this.#spPlayBtn.addEventListener("click", this.spPlayBtnClick.bind(this));
     this.#spCountDown = new TSpriteNumber(aSpcvs, aSPI.numberBig, 280, 190);
     this.#spCountDown.visible = false;
     this.#sfCountDown = null;
     this.#sfRunning = null;
+    this.#spGameScore = new TSpriteNumber(aSpcvs, aSPI.numberSmall, 10, 10);
+    this.#spGameScore.alpha = 0.5;
+    this.#spGameScore.digits = 0;
+  }
 
-    // Whenever Spacebar is pressed starts the game
-    this._onKeydown = (e) => {
-      if (e.code === "Space") this.spPlayBtnClick();
-    };
-    window.addEventListener("keydown", this._onKeydown);
+  incGameScore(aScore){
+    this.#spGameScore.value += aScore;
+  }
+
+  stopSound(){
+    this.#sfRunning.stop();
   }
 
   draw(){
     this.#spTitle.draw();
     this.#spPlayBtn.draw();
     this.#spCountDown.draw();
+    this.#spGameScore.draw();
   }
 
   countDown(){
     this.#spCountDown.value--;
     if(this.#spCountDown.value > 0){
-      setTimeout(this.countDown.bind(this), 1000);
-    }
-    if(this.#spCountDown.value === 0){
-      startGame();
+      setTimeout(this.countDown.bind(this), 1000);  
+    }else{
       this.#spCountDown.visible = false;
+      this.#spTitle.hidden = true;
+      this.#sfRunning = new TSoundFile(fnRunning);
+      if (!this.#isMuted) {
+        this.#sfRunning.play();
+      }
+      startGame();
     }
+    
   }
 
   spPlayBtnClick(){
     console.log("Click!");
+    this.#spGameScore.value = 0;
     this.#spPlayBtn.hidden = true;
     this.#spCountDown.visible = true;
     this.#spCountDown.value = 3;
     this.#sfCountDown = new TSoundFile(fnCountDown);
-    this.#sfCountDown.play();
+    if (!this.#isMuted) {
+      this.#sfCountDown.play();
+    }
     setTimeout(this.countDown.bind(this), 1000);
-    this.#spTitle.hidden = true;
-    // Removes Spacebar so it doesnt start each time
-    window.removeEventListener("keydown", this._onKeydown);
   }
 
   setSoundMute(aIsMuted) {
-    if (aIsMuted) { console.log("Sound muted");
-      // Pause the running sound if it exists
+    this.#isMuted = aIsMuted;
+    if (aIsMuted) {
+      if (this.#sfCountDown) {
+        this.#sfCountDown.pause();
+      }
       if (this.#sfRunning) {
         this.#sfRunning.pause();
       }
-    } else { console.log("Sound unmuted");
-      // Play the running sound if it exists
-      if (this.#sfRunning) { 
+    } else {
+      if (this.#sfCountDown) {
+        this.#sfCountDown.play();
+      }
+      if (this.#sfRunning) {
         this.#sfRunning.play();
       }
     }
   }
+
 }

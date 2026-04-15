@@ -1,6 +1,6 @@
 "use strict";
 // Import necessary modules
-import { TSprite, TSpriteCanvas } from "libSprite";
+import { TSpriteCanvas } from "libSprite";
 import { TBackground } from "./background.js";
 import { THero } from "./hero.js";
 import { TObstacle } from "./obstacle.js";
@@ -34,15 +34,15 @@ const SpriteInfoList = {
 export const EGameStatus = { idle: 0, countDown: 1, gaming: 2, heroIsDead: 3, gameOver: 4, state: 0 };
 export let soundMuted = false;
 const background = new TBackground(spcvs, SpriteInfoList);
-export const hero = new THero(spcvs, SpriteInfoList.hero3);
+export const hero = new THero(spcvs, SpriteInfoList.hero1);
 const obstacles = [];
 const baits = [];
-const menu = new TMenu(spcvs, SpriteInfoList);
+export const menu = new TMenu(spcvs, SpriteInfoList);
+let obstaclePassed = false;
 
 //--------------- Functions ----------------------------------------------//
-export function startGame(){
+export function startGame() {
   EGameStatus.state = EGameStatus.gaming;
-  menu.startRunningSound();
   setTimeout(spawnObstacle, 1000);
   setTimeout(spawnBait, 1000);
 }
@@ -65,7 +65,6 @@ function spawnObstacle() {
   }
 }
 
-
 function animateGame() {
   hero.animate();
   let eaten = -1;
@@ -79,8 +78,9 @@ function animateGame() {
   if (eaten >= 0) {
     console.log("Eaten!");
     baits.splice(eaten, 1);
+    hero.eat();
+    menu.incGameScore(1);
   }
-
 
   if (EGameStatus.state === EGameStatus.gaming) {
     background.animate();
@@ -90,6 +90,12 @@ function animateGame() {
       obstacle.animate();
       if (obstacle.x < -50) {
         deleteObstacle = true;
+        obstaclePassed = false;
+      }else if((obstacle.x + obstacle.width) < hero.x){
+        if(!obstaclePassed){
+          menu.incGameScore(1);
+          obstaclePassed = true;
+        }
       }
     }
     if (deleteObstacle) {
@@ -146,8 +152,16 @@ function setSoundOnOff() {
 function setDayNight(aEvent) {
   // Set day or night mode based on radio buttons
   // Day mode is when value is 1, night mode is 0, you can use this as a boolean, 1=true, 0=false
-  // e.g., isDayMode = (aEvent.target.value == 1);
+  const isDayMode = (aEvent.target.value == 1);
   console.log(`Day/Night mode changed: ${aEvent.target.value}`);
+  
+  // Update background
+  background.setDayNightMode(isDayMode);
+  
+  // Update all obstacles
+  for (let i = 0; i < obstacles.length; i++) {
+    obstacles[i].setDayNightMode(isDayMode);
+  }
 } // end of setDayNight
 
 //--------------- Main Code ----------------------------------------------//

@@ -1,6 +1,6 @@
 "use strict";
 import { TSprite } from "libSprite";
-import { hero, EGameStatus } from "./FlappyBird.mjs";
+import { hero, EGameStatus, menu } from "./FlappyBird.mjs";
 
 const EasyFlyerGap = 150;
 const HardFlyerGap = 100;
@@ -18,7 +18,7 @@ export class TObstacle{
     const gap = Math.ceil(Math.random() * (EasyFlyerGap - HardFlyerGap) + HardFlyerGap);
     const minTop = -this.#spi.height + MinimumProtrusion; // Minimum top position for upper obstacle
     const maxTop = -MinimumProtrusion; // Maximum top position for upper obstacle
-    // Genrate random top position for upper obstacle
+    // Generate random top position for upper obstacle
     let top = Math.ceil(Math.random() * (maxTop - minTop) + minTop);
     const minBottom = 400 - MinimumProtrusion; // Minimum bottom position for lower obstacle
     let topWithGap = this.#spi.height + top + gap; // Initial position of bottom obstacle based on the height of the sprite, gap, and top 
@@ -40,6 +40,10 @@ export class TObstacle{
     return this.#spDown.x;
   }
 
+  get width(){
+    return this.#spDown.width;
+  }
+
   draw(){
     this.#spDown.draw();
     this.#spUp.draw();
@@ -49,14 +53,21 @@ export class TObstacle{
   animate(){
     this.#spDown.x--;
     this.#spUp.x--;
-    let hasCollided = (hero.hasCollided(this.#spUp) || hero.hasCollided(this.#spDown));
+    let hasCollided = hero.hasCollided(this.#spDown) || hero.hasCollided(this.#spUp);
 
-    if (hasCollided){
-      console.log("Collision detected!");
+    if(hasCollided){
+      console.log("Collision with Hero!");
       EGameStatus.state = EGameStatus.heroIsDead;
-      hero.animationspeed = 0;
-      hero.flap();
+      hero.animationSpeed = 0;
+      menu.stopSound();
+      hero.flap(); // Last flap of death!
+      hero.dead();
     }
+  }
+
+  setDayNightMode(aIsDayMode){
+    this.#spUp.index = aIsDayMode ? 3 : 1;
+    this.#spDown.index = aIsDayMode ? 2 : 0;
   }
 
 }// End of class TObstacle
