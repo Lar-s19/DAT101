@@ -39,10 +39,12 @@ const obstacles = [];
 const baits = [];
 export const menu = new TMenu(spcvs, SpriteInfoList);
 let obstaclePassed = false;
+let gameOverShown = false;
 
 //--------------- Functions ----------------------------------------------//
 export function startGame() {
   EGameStatus.state = EGameStatus.gaming;
+  gameOverShown = false;
   setTimeout(spawnObstacle, 1000);
   setTimeout(spawnBait, 1000);
 }
@@ -102,7 +104,13 @@ function animateGame() {
       obstacles.splice(0, 1);
     }
   }
-}
+
+// Check if hero is touching anything
+  if (EGameStatus.state === EGameStatus.gameOver && !gameOverShown) {
+    gameOverShown = true;
+    menu.showGameOver(menu.getScore());
+  }
+} 
 
 function drawGame() {
   background.drawBackground();
@@ -147,7 +155,8 @@ function onKeyDown(aEvent) {
 function setSoundOnOff() {
   soundMuted = chkMuteSound.checked;
   menu.setSoundMute(soundMuted);
-} // end of setSoundOnOff
+} 
+// end of setSoundOnOff
 
 function setDayNight(aEvent) {
   // Set day or night mode based on radio buttons
